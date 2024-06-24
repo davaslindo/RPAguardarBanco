@@ -1,42 +1,41 @@
 name: Pipeline prod, baixar, testar e subir no dockerhub  #nome do teste
 
 on: # trigger (gatilho)
-
-	pull_request: # o que vai ativar esse gatilho
-	branches: ["prod"] # e qual a branch que vai gerar o gatilho (["*"] todas as branches)
+  pull_request: # o que vai ativar esse gatilho
+    branches: ["prod"] # e qual a branch que vai gerar o gatilho (["*"] todas as branches)
 
 jobs: # define o que ele vai verificar
-	mc_pedrin:
-	runs-on: ubuntu-latest
-		steps: # passos a serem executados ex:(rodar o requirements, rodar o python, rodar o banco)
-	  - uses: actions/checkout@v2 # entra na pasta do meu projeto
-	
-	  - name: Configurar ambiente para o Python
-	    uses: actions/setup-python@v2
-	    with:
-	      python-version: 3.12.2
-	
-	  - name: Instalar dependências
-	    run: |
-	        python -m pip install --upgrade pip
-	        pip install coverage
-	        pip install -r TESTE/requirements.txt
+  mc_pedrin:
+    runs-on: ubuntu-latest
+    steps: # passos a serem executados ex:(rodar o requirements, rodar o python, rodar o banco)
+      - uses: actions/checkout@v2 # entra na pasta do meu projeto
 
-	  - name: Executar o teste do APP
-	    run: |
-	      coverage run TESTE/rpa.py
+      - name: Configurar ambiente para o Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12.2
 
-	  - name: Resultados
-	    run: coverage report
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install coverage
+          pip install -r TESTE/requirements.txt
 
-	  - name: Log in to Docker Hub
-	    run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Executar o teste do APP
+        run: |
+          coverage run TESTE/rpa.py
 
-	  - name: Verificar login no Docker Hub
-	    run: docker info
+      - name: Resultados
+        run: coverage report
 
-	  - name: Build Docker image
-	    run: docker build -t daviscavalcante/rpa:${{github.run_number}} .
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-	  - name: Push Docker image
-	    run: docker push daviscavalcante/rpa:${{github.run_number}}
+      - name: Verificar login no Docker Hub
+        run: docker info
+
+      - name: Build Docker image
+        run: docker build -t daviscavalcante/rpa:${{github.run_number}} .
+
+      - name: Push Docker image
+        run: docker push daviscavalcante/rpa:${{github.run_number}}
