@@ -1,0 +1,22 @@
+name: Pipeline prod, baixar, testar e subir no dockerhub  #nome do teste
+
+on: # trigger (gatilho)
+  push: # o que vai ativar esse gatilho
+    branches: ["dev"] # e qual a branch que vai gerar o gatilho (["*"] todas as branches)
+
+jobs: # define o que ele vai verificar
+  mc_kevin:
+    runs-on: ubuntu-latest
+    steps: # passos a serem executados ex:(rodar o requirements, rodar o python, rodar o banco)
+      - uses: actions/checkout@v2 # entra na pasta do meu projeto
+
+      - name: Configurar ambiente para o Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12.2
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+##sla
