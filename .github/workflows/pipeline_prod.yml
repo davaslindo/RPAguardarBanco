@@ -19,11 +19,11 @@ jobs: # define o que ele vai verificar
         run: |
           python -m pip install --upgrade pip
           pip install coverage
-          pip install -r TESTE/requirements.txt
+          pip install -r requirements.txt
 
       - name: Executar o teste do APP
         run: |
-          coverage run TESTE/rpa.py
+          coverage run rpa.py
 
       - name: Resultados
         run: coverage report
